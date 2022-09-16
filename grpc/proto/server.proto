@@ -1,0 +1,23 @@
+syntax = "proto3";
+package proto;
+
+service MainService {
+    rpc SayHello(SayHelloRequest) returns (SayHelloResponse);
+    rpc SayGoodBye(SayGoodByeRequest)returns (SayGoodByeResponse);
+}
+
+message SayHelloRequest{
+    string name=1;
+}
+
+message SayHelloResponse{
+    string msg=1;
+}
+
+message SayGoodByeRequest{
+    string name=1;
+}
+
+message SayGoodByeResponse{
+    string msg=1;
+}
