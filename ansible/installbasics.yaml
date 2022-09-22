@@ -1,0 +1,101 @@
+- name: install requirements and setup users
+  hosts: all
+  become: yes
+  vars:
+    userlist:
+      - username: "viktor"
+        password: "viktor123"
+
+  tasks:
+    - name: install basic pkgs
+      apt:
+        pkg: 
+        - neofetch
+        - git
+        - net-tools
+        - zsh
+        - acl
+        - grc
+        - bat
+        - vim
+        - tree
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        state: latest
+        update_cache: true
+
+    - name: add users accounts
+      user:
+        state: present
+        name: "{{ item.username }}"
+        create_home: true
+        shell: /bin/zsh
+        groups: 
+          - sudo
+          - lxd
+        append: yes
+        password: "{{ item.password | password_hash('sha512') }}"
+      loop: "{{ userlist }}"
+
+    - name: install oh my zsh to users
+      include_role:
+        name: gantsign.oh-my-zsh
+      vars:
+        users:
+          - username: "{{ item.username }}"
+            oh_my_zsh:
+              theme: gnzh
+              plugins:
+                - git
+                - zsh-syntax-highlighting
+                - zsh-autosuggestions
+                - docker
+      loop: "{{ userlist }}"
+
+    - name: install ohmyzsh autosuggestions plugins
+      become_user: "{{ item.username }}"
+      git:
+        repo: https://github.com/zsh-users/zsh-autosuggestions
+        clone: yes
+        dest: ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+      loop: "{{ userlist }}"
+
+    - name: install ohmyzsh syntax highlighting plugins
+      become_user: "{{ item.username }}"
+      git:
+        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+        clone: yes
+        dest: ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+      loop: "{{ userlist }}"
+
+    - name: edit .zshrc for grc
+      become_user: "{{ item.username }}"
+      lineinfile:
+        line: '[[ -s "/etc/grc.zsh" ]] && source /etc/grc.zsh'
+        dest: ~/.zshrc
+      loop: "{{ userlist }}"
+
+    - name: edit .zshrc for ohmyzsh highlighting color
+      become_user: "{{ item.username }}"
+      lineinfile:
+        line: 'ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=fg="#585858"'
+        dest: ~/.zshrc
+      loop: "{{ userlist }}"
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true

@@ -1,0 +1,15 @@
+[all:vars]
+ansible_connection=ssh
+ansible_user=ubuntu
+ansible_ssh_pass=salam123
+ansible_sudo_pass=salam123
+ansible_port=22
+
+[workers]
+worker1 ansible_host=10.102.210.2
+worker2 ansible_host=10.102.210.253
+
+[masters]
+registry ansible_host=10.102.210.179
+master  ansible_host=10.102.210.162
+
