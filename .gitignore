@@ -1,0 +1,11 @@
+.idea
+.vscode
+vscode
+idea
+.idea/*
+.vscode/*
+*vscode*
+*idea*
+/*/.vscode
+/*/.idea
+squirrel/.idea/*
