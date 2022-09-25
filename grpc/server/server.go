@@ -8,22 +8,16 @@ import (
 	pb "github.com/gictorbit/study/grpc/proto/pb"
 )
 
-type MainServer struct {
-	pb.UnimplementedMainServiceServer
-	*HelloServer
-	*GoodByeServer
-}
-
 type HelloServer struct {
 	names  map[string]int
 	logger *log.Logger
-	pb.UnimplementedMainServiceServer
+	pb.UnimplementedHelloServiceServer
 }
 
 type GoodByeServer struct {
 	names  map[string]int
 	logger *log.Logger
-	pb.UnimplementedMainServiceServer
+	pb.UnimplementedGoodByeServiceServer
 }
 
 func NewHelloServer(logger *log.Logger) *HelloServer {
@@ -37,13 +31,6 @@ func NewGoodByeServer(logger *log.Logger) *GoodByeServer {
 	return &GoodByeServer{
 		logger: logger,
 		names:  make(map[string]int),
-	}
-}
-
-func NewMainServer(logger *log.Logger) *MainServer {
-	return &MainServer{
-		HelloServer:   NewHelloServer(logger),
-		GoodByeServer: NewGoodByeServer(logger),
 	}
 }
 
@@ -71,12 +58,4 @@ func (g *GoodByeServer) SayGoodBye(ctx context.Context, req *pb.SayGoodByeReques
 	return &pb.SayGoodByeResponse{
 		Msg: msg,
 	}, nil
-}
-
-func (m *MainServer) SayHello(ctx context.Context, req *pb.SayHelloRequest) (*pb.SayHelloResponse, error) {
-	return m.HelloServer.SayHello(ctx, req)
-}
-
-func (m *MainServer) SayGoodBye(ctx context.Context, req *pb.SayGoodByeRequest) (*pb.SayGoodByeResponse, error) {
-	return m.GoodByeServer.SayGoodBye(ctx, req)
 }

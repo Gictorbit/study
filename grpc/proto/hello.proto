@@ -1,9 +1,8 @@
 syntax = "proto3";
 package proto;
 
-service MainService {
+service HelloService {
     rpc SayHello(SayHelloRequest) returns (SayHelloResponse);
-    rpc SayGoodBye(SayGoodByeRequest)returns (SayGoodByeResponse);
 }
 
 message SayHelloRequest{
@@ -11,13 +10,5 @@ message SayHelloRequest{
 }
 
 message SayHelloResponse{
-    string msg=1;
-}
-
-message SayGoodByeRequest{
-    string name=1;
-}
-
-message SayGoodByeResponse{
     string msg=1;
 }

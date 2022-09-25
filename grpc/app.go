@@ -22,7 +22,8 @@ var (
 
 func main() {
 	logger := log.Default()
-	mainServer := server.NewMainServer(logger)
+	helloServer := server.NewHelloServer(logger)
+	goodByeServer := server.NewGoodByeServer(logger)
 
 	unaryOpts := []grpc.UnaryServerInterceptor{
 		grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
@@ -42,7 +43,8 @@ func main() {
 	}
 
 	reflection.Register(s)
-	pb.RegisterMainServiceServer(s, mainServer)
+	pb.RegisterHelloServiceServer(s, helloServer)
+	pb.RegisterGoodByeServiceServer(s, goodByeServer)
 
 	go func() {
 		err := s.Serve(lis)
