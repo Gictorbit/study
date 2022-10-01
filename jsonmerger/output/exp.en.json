@@ -1,0 +1,10 @@
+{
+    "test": {
+        "field": "Test I",
+        "type": "text"
+    },
+    "test2": {
+        "name": "Test II",
+        "age": "12"
+    }
+}
